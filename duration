@@ -1,0 +1,54 @@
+#!/bin/bash
+####-----------------------------------------------------------------------####
+##--                              duration                                 --##
+####-----------------------------------------------------------------------####
+##-      Author(s)                                                         --##
+##-                Yann MAUPU (yann.maupu[at]clustervision.com)            --##
+##-      Date                                                              --##
+##-                2016/11/29                                              --##
+##-      Synopsis                                                          --##
+##-                Script printing the quantity of hours between           --##
+##-                two given time-stamps (same day only)                   --##
+##-      License                                                           --##
+##-                duration is a free software: you can redistribute it    --##
+##-                an/or modify it under the terms of the                  --##
+##-                GNU General Public License as published by the          --##
+##-                Free Software Foundation, either version 3 of the       --##
+##-                License, or (at your option) any later version.         --##
+##-                duration is distributed in the hope that it will be     --##
+##-                useful, but WITHOUT ANY WARRANTY; without even the      --##
+##-                implied warranty of MERCHANTABILITY or FITNESS FOR A    --##
+##-                PARTICULAR PURPOSE.                                     --##
+##-                See the GNU General Public License for more details.    --##
+##-                You should have received a copy of the GNU General      --##
+##-                Public License along with duration. If not,             --##
+##-                see <http://www.gnu.org/licenses/>.                     --##
+##-                                                                        --##
+####-----------------------------------------------------------------------####
+
+if [[ $# != 2 ]] ; then
+	echo "ERROR: Please provide 2 dates."
+	echo "Usage: duration [--now] <START-DATE>"
+	echo "       duration <END-DATE> <START-DATE>"
+	echo "  <DATE>"
+	echo "       hh:mm:ss   format"
+	echo "        (Eg. 15:30:57)"
+	echo "    or xyzxyzxyz format (seconds spent since 1970)"
+	echo "        (Eg. 1480429857)"
+	exit 10
+fi
+
+if [[ $# = 2 ]] ; then
+	end_time=$1
+	start_time=$2
+
+	if [[ $start_time =~ ':' ]] ; then
+		start_time=$(date --date="$start_time" +%s)
+	fi
+
+	if [[ $end_time = '--now' ]] ; then
+		end_time=$(date +%s)
+	fi
+	date --date="@$(expr $(expr $end_time - $start_time) - 3600)" | awk '{print $4}'
+fi
+
